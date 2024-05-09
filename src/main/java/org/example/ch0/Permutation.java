@@ -1,14 +1,25 @@
 package org.example.ch0;
 
+import java.io.*;
+import java.util.*;
+
 public class Permutation {
 
 
-    public static void main(String ... args){
+    public static void main(String ... args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        P per = new P(new int[]{1, 2, 3});
+
+        int[] arr = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+
+        int[] nr = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 
 
-        per.p(3, 2);
+
+        P per = new P(arr);
+
+
+        per.p(nr[0], nr[1]);
     }
 
 }
