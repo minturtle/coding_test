@@ -17,7 +17,6 @@ public class Problem1A {
         for(int i = 0 ; i < 9; i++){
             input[i] = Integer.parseInt(br.readLine().trim());
         }
-
         C c = new C(input);
         List<Integer> result = c.c(9, 2);
 
