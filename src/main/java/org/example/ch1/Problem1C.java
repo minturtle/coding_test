@@ -39,7 +39,7 @@ public class Problem1C {
 
     static class ParkingLot{
 
-        private final ArrayList<int[]> parkTimes = new ArrayList<>(3);
+        private final int[] parkTimes = new int[100];
         private final int feeA;
 
         private final int feeB;
@@ -55,13 +55,11 @@ public class Problem1C {
 
 
         public void park(int startTime, int endTime){
-            int[] parkTime =  new int[100];
 
             for(int i = startTime; i < endTime; i++){
-                parkTime[i] = 1;
+                parkTimes[i]++;
             }
 
-            parkTimes.add(parkTime);
 
         }
 
@@ -76,7 +74,8 @@ public class Problem1C {
         }
 
         public int getFeeAtTime(int time){
-            int parkedTruck = parkTimes.get(0)[time] + parkTimes.get(1)[time] + parkTimes.get(2)[time];
+            int parkedTruck = parkTimes[time];
+
 
             switch(parkedTruck){
                 case 1:
