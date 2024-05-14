@@ -14,18 +14,14 @@ public class Problem1I {
 
         int[] input = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 
+        int[] prefixSum = getPrefixSum(input);
 
-        int resultLength = nk[0] - nk[1] + 1;
-        int max = Integer.MIN_VALUE;
+        int max = prefixSum[nk[1] - 1]; // 가상의 result 배열 값 중 첫번째 값을 max로 초기화
 
-        for(int i = 0; i < resultLength; i++){
-            int sum = 0;
-            for(int j = i; j < i + nk[1]; j++){
-                sum += input[j];
-            }
-            max = max < sum ? sum : max;
+        for(int i = nk[1]; i < prefixSum.length; i++){
+            int value = prefixSum[i] - prefixSum[i - nk[1]];
+            max = max < value ? value : max;
         }
-
 
         bw.write(Integer.toString(max));
         bw.flush();
@@ -33,7 +29,18 @@ public class Problem1I {
         br.close();
         bw.close();
 
+
     }
 
+    public static int[] getPrefixSum(int[] input){
+        int[] result = new int[input.length];
 
+        result[0] = input[0];
+
+        for(int i = 1; i < result.length; i++){
+            result[i] = input[i] + result[i -1];
+        }
+
+        return result;
+    }
 }
