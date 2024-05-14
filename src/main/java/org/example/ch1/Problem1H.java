@@ -56,29 +56,26 @@ public class Problem1H {
 
 
     static class Dict{
-        private String[] dict;
+        private Map<String , Integer> dictMap; // 문자열 -> 숫자를 위한 자료구조
+        private String[] dictArr; // 숫자 -> 문자열을 위한 자료구조
+
 
         public Dict(int size){
-            dict = new String[size + 1];
+            dictMap = new HashMap<>(size);
+            dictArr = new String[size + 1];
         }
 
         public void add(String name, int idx){
-            dict[idx] = name;
+            dictMap.put(name, idx);
+            dictArr[idx] = name;
         }
 
         public String find(int idx){
-            return dict[idx];
+            return dictArr[idx];
         }
 
         public String find(String name){
-            for(int i = 1; i < dict.length; i++){
-                if(!dict[i].equals(name)){
-                    continue;
-                }
-                return Integer.toString(i);
-            }
-
-            return "-1";
+            return Integer.toString(dictMap.get(name));
         }
 
     }
