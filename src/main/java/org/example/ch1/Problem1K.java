@@ -10,73 +10,67 @@ public class Problem1K {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-
-        Permutation p = new Permutation();
-
         String input = br.readLine().trim();
 
-        String result = p.p(input.toCharArray(), input.length());
+        int[] alphabetCnt = new int[26];
 
-        if(result == null){
+        for(int i = 0; i < input.length(); i++){
+            alphabetCnt[input.charAt(i) - 'A']++;
+        }
+
+        if(!pelMakeAvailable(alphabetCnt, input.length())){
             bw.write("I'm Sorry Hansoo");
-        }
-        else{
-            bw.write(result);
+            bw.flush();
+
+            bw.close();
+            br.close();
+            return;
         }
 
+        char[] result = new char[input.length()];
+        int resultIdx = 0;
+        for(int i = 0; i < 26; i++){
+            int count = alphabetCnt[i];
+
+            if(isOdd(count)){
+                result[result.length / 2 + 1] = (char)(i + 'A');
+                continue;
+            }
+
+            int cntIdx = count / 2;
+            for(int j = 0; j < cntIdx; j++){
+                result[resultIdx] = (char)(i + 'A');
+                result[result.length -1 - resultIdx] = (char)(i + 'A');
+                resultIdx++;
+            }
+        }
+
+        bw.write(String.valueOf(result));
         bw.flush();
 
-        br.close();
         bw.close();
+        br.close();
+
+
     }
 
-    static class Permutation{
 
-        public String p(char[] n, int r){
-            return p(n, r, 0);
-        }
+    static boolean pelMakeAvailable(int[] alphabetCnt, int size){
+        int oddCnt = 0;
 
-        private String p(char[] n, int r, int depth){
-            if(depth == r){
-                if(isPel(n)){
-                    return String.valueOf(n);
-                }
-                return null;
+        for(int i = 0; i <26 && oddCnt < 2; i++){
+            if(isOdd(alphabetCnt[i])){
+                oddCnt++;
             }
-
-            for(int i = depth; i < r; i++){
-                swap(n, depth, i);
-                String result = p(n, r, depth + 1);
-
-                if(result != null){
-                    return result;
-                }
-
-                swap(n, depth, i);
-            }
-
-            return null;
         }
 
-        private void swap(char[] n , int i1, int i2){
-            char temp = n[i1];
-            n[i1] = n[i2];
-            n[i2] = temp;
-        }
+        if(oddCnt == 1 && isOdd(size)) return true;
+        else if(oddCnt == 0 && !isOdd(size)) return true;
+        return false;
+    }
 
-        private boolean isPel(char[] cArr){
-            int length = cArr.length;
-            int mid = length / 2;
-
-            for(int i = 0; i < mid; i++){
-                if(cArr[i] != cArr[length - 1 - i]){
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
+    private static boolean isOdd(int alphabetCnt) {
+        return alphabetCnt % 2 == 1;
     }
 
 
