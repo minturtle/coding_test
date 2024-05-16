@@ -25,7 +25,7 @@ public class Problem1J {
     static void doTest(BufferedReader br, BufferedWriter bw) throws IOException{
 
         Map<String , Integer> clotheCategoryCountMap = new HashMap<>();
-        Combination c= new Combination();
+
 
         int clotheTotalCount = Integer.parseInt(br.readLine().trim());
 
@@ -43,66 +43,18 @@ public class Problem1J {
 
         }
 
-        String[] categories = clotheCategoryCountMap.keySet().toArray(new String[]{});
+        Collection<Integer> values = clotheCategoryCountMap.values();
+        int result = 1;
 
-
-        int total = 0;
-
-
-        // nCr 계산(n == 카테고리 갯수, r == 1 ~ 카테고리 갯수)
-        for(int i = 1; i <= categories.length; i++){
-            List<Stack<String>> selectResult = c.c(categories, i);
-
-
-            // 뽑기 결과에 대해 뽑힌 카테고리 갯수 * 카테고리 갯수로 경우의 수를 구함
-            for(int j = 0; j < selectResult.size(); j++){
-                Stack<String> selected = selectResult.get(j);
-
-                int cnt = 1;
-                while(!selected.empty()){
-                    int categoryCnt =  clotheCategoryCountMap.get(selected.pop());
-                    cnt *= categoryCnt;
-                }
-
-                total += cnt;
-            }
+        for(int value : values){
+            result *= (value + 1);
         }
 
-
-        bw.write(Integer.toString(total));
+        bw.write(Integer.toString(result - 1)); // 아무것도 안입는 경우의 수는 제외하기 때문에 -1
         bw.newLine();
-    }
-
-
-    static class Combination{
-
-        public List<Stack<String>> c(String[] n , int r){
-            Stack<String> selected = new Stack<>();
-
-            return c(n, r, selected, 0);
-        }
-
-
-        private List<Stack<String>> c(String[] n, int r, Stack<String> selected, int start){
-            ArrayList<Stack<String>> result = new ArrayList<>();
-            if(selected.size() == r){
-                result.add((Stack<String>)selected.clone());
-                return result;
-            }
-
-
-
-            for(int i = start; i < n.length; i++){
-                selected.push(n[i]);
-                result.addAll(c(n, r, selected, i + 1));
-                selected.pop();
-            }
-
-            return result;
-        }
+        bw.flush();
 
     }
-
 
 
 }
