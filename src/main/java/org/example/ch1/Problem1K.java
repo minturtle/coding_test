@@ -12,6 +12,7 @@ public class Problem1K {
 
         String input = br.readLine().trim();
 
+
         int[] alphabetCnt = new int[26];
 
         for(int i = 0; i < input.length(); i++){
@@ -30,19 +31,20 @@ public class Problem1K {
         char[] result = new char[input.length()];
         int resultIdx = 0;
         for(int i = 0; i < 26; i++){
-            int count = alphabetCnt[i];
+            for(; alphabetCnt[i] > 0;){
+                if(isOdd(alphabetCnt[i])){
+                    result[result.length / 2] = (char)(i + 'A');
+                    alphabetCnt[i]--;
+                }
+                else{
+                    result[resultIdx] = (char)(i + 'A');
+                    result[result.length -1 - resultIdx] = (char)(i + 'A');
+                    resultIdx++;
+                    alphabetCnt[i]-=2;
+                }
 
-            if(isOdd(count)){
-                result[result.length / 2 + 1] = (char)(i + 'A');
-                continue;
             }
 
-            int cntIdx = count / 2;
-            for(int j = 0; j < cntIdx; j++){
-                result[resultIdx] = (char)(i + 'A');
-                result[result.length -1 - resultIdx] = (char)(i + 'A');
-                resultIdx++;
-            }
         }
 
         bw.write(String.valueOf(result));
@@ -56,7 +58,18 @@ public class Problem1K {
 
 
     static boolean pelMakeAvailable(int[] alphabetCnt, int size){
+        /*
+        * 펠린드롬을 만들 수 있는 경우
+        * 1. 짝수
+        *   1.1 홀수인 개체가 없어야함.
+        * 2. 홀수
+        *   2.1 홀수인 개체가 하나있어야함.
+        *
+        * */
+
         int oddCnt = 0;
+
+
 
         for(int i = 0; i <26 && oddCnt < 2; i++){
             if(isOdd(alphabetCnt[i])){
@@ -74,4 +87,6 @@ public class Problem1K {
     }
 
 
+
 }
+
