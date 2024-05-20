@@ -9,15 +9,23 @@ public class Problem2D {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int[] mnk = Arrays.stream(br.readLine().trim().split(" ")).mapToInt(Integer::parseInt).toArray();
+        StringTokenizer st = new StringTokenizer(br.readLine().trim());
+
+        int m = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+
+        MyMap map = new MyMap(m, n);
 
 
-        MyMap map = new MyMap(mnk[0], mnk[1]);
+        for(int i = 0; i < k; i++){
+            st = new StringTokenizer(br.readLine().trim());
+            int x0 = Integer.parseInt(st.nextToken());
+            int y0 = Integer.parseInt(st.nextToken());
+            int x1 = Integer.parseInt(st.nextToken());
+            int y1 = Integer.parseInt(st.nextToken());
 
-
-        for(int i = 0; i < mnk[2]; i++){
-            int[] squarePoint = Arrays.stream(br.readLine().trim().split(" ")).mapToInt(Integer::parseInt).toArray();
-            map.addSquare(squarePoint[0], squarePoint[1], squarePoint[2], squarePoint[3]);
+            map.addSquare(x0, y0, x1, y1);
         }
 
         CountResult result = map.calculate();
