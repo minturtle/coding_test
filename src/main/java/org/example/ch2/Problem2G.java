@@ -7,7 +7,7 @@ import java.util.*;
 public class Problem2G {
 
 
-    static Set<Integer> inputOrderSet; // 탐색 순서 보장, 중복 X
+
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -21,58 +21,57 @@ public class Problem2G {
 
 
 
-        int[] inputArr = Arrays.stream(br.readLine().trim().split(" ")).mapToInt(Integer::parseInt).toArray();
-        inputOrderSet = getInputOrderSet(inputArr);
-        Map<Integer, Integer> countArr = getCountArr(c, inputArr);
+        Integer[] inputArr = Arrays.stream(br.readLine().trim().split(" ")).mapToInt(Integer::parseInt).boxed().toArray(Integer[]::new);
 
-        for(int i = 0; i < inputOrderSet.size(); i++){
-            int maxNum = findMaxNum(countArr);
+        Map<Integer, Integer> countArr = getCountArr(inputArr);
+        Map<Integer, Integer> indexArr = getIndexArr(inputArr);
 
-            for(int j = 0 ; j < countArr.get(maxNum); j++){
-                sb.append(maxNum).append(" ");
+
+
+
+        Arrays.sort(inputArr, (n1, n2)->{
+            int count1 = countArr.get(n1);
+            int count2 = countArr.get(n2);
+            if(count1 != count2){
+               return count2 - count1;
             }
-            countArr.put(maxNum, 0); //한번 탐색된거는 0으로 바꿔 다시 탐색되지 못하게 함.
+            else{
+                return indexArr.get(n1) - indexArr.get(n2);
+            }
+        });
+
+        for(int num : inputArr){
+            sb.append(num).append(" ");
         }
 
         System.out.println(sb.toString());
-
-    }
-
-    static Set<Integer> getInputOrderSet(int[] inputArr){
-        Set<Integer> set = new LinkedHashSet<>();
-
-        for(int num : inputArr){
-            set.add(num);
-        }
-
-        return set;
-    }
-
-    // 빈도수가 가장 높은 숫자를 반환하는 함수
-    static int findMaxNum(Map<Integer, Integer> countArr){
-        int maxNum = (int)inputOrderSet.toArray()[0];
-
-        for(int num : inputOrderSet){
-            // count가 같은 경우 order가 빠른 순으로 우선순위를 부여하기 위해, 무조건 큰 값이여야지만 max를 변경
-            if(countArr.get(maxNum) >= countArr.get(num)){
-                continue;
-            }
-
-            maxNum = num;
-        }
-
-        return maxNum;
     }
 
 
 
-    static Map<Integer, Integer> getCountArr(int maxNum, int[] arr){
+
+
+
+    static Map<Integer, Integer> getCountArr(Integer[] inputArr){
         Map<Integer, Integer> result = new HashMap<>();
 
-        for(int num : arr){
+        for(int num : inputArr){
             result.putIfAbsent(num, 0);
             Integer i = result.get(num);
             result.put(num, i + 1);
+        }
+
+        return result;
+    }
+
+    static Map<Integer, Integer> getIndexArr(Integer[] inputArr){
+        Map<Integer, Integer> result = new HashMap<>();
+
+        for(int i = 0; i < inputArr.length; i++){
+            if(result.containsKey(inputArr[i])){
+                continue;
+            }
+            result.put(inputArr[i], i);
         }
 
         return result;
