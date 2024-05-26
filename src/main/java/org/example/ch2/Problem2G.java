@@ -22,29 +22,39 @@ public class Problem2G {
 
 
         int[] inputArr = Arrays.stream(br.readLine().trim().split(" ")).mapToInt(Integer::parseInt).toArray();
-        inputOrderSet = new LinkedHashSet<>(c);
-        int[] countArr = getCountArr(c, inputArr);
+        inputOrderSet = getInputOrderSet(inputArr);
+        Map<Integer, Integer> countArr = getCountArr(c, inputArr);
 
         for(int i = 0; i < inputOrderSet.size(); i++){
             int maxNum = findMaxNum(countArr);
 
-            for(int j = 0 ; j < countArr[maxNum]; j++){
+            for(int j = 0 ; j < countArr.get(maxNum); j++){
                 sb.append(maxNum).append(" ");
             }
-            countArr[maxNum] = 0; //한번 탐색된거는 0으로 바꿔 다시 탐색되지 못하게 함.
+            countArr.put(maxNum, 0); //한번 탐색된거는 0으로 바꿔 다시 탐색되지 못하게 함.
         }
 
         System.out.println(sb.toString());
 
     }
 
+    static Set<Integer> getInputOrderSet(int[] inputArr){
+        Set<Integer> set = new LinkedHashSet<>();
+
+        for(int num : inputArr){
+            set.add(num);
+        }
+
+        return set;
+    }
+
     // 빈도수가 가장 높은 숫자를 반환하는 함수
-    static int findMaxNum(int[] countArr){
-        int maxNum = 0;
+    static int findMaxNum(Map<Integer, Integer> countArr){
+        int maxNum = (int)inputOrderSet.toArray()[0];
 
         for(int num : inputOrderSet){
             // count가 같은 경우 order가 빠른 순으로 우선순위를 부여하기 위해, 무조건 큰 값이여야지만 max를 변경
-            if(countArr[maxNum] >= countArr[num]){
+            if(countArr.get(maxNum) >= countArr.get(num)){
                 continue;
             }
 
@@ -56,12 +66,13 @@ public class Problem2G {
 
 
 
-    static int[] getCountArr(int maxNum, int[] arr){
-        int[] result = new int[maxNum+1];
+    static Map<Integer, Integer> getCountArr(int maxNum, int[] arr){
+        Map<Integer, Integer> result = new HashMap<>();
 
         for(int num : arr){
-            result[num]++;
-            inputOrderSet.add(num);
+            result.putIfAbsent(num, 0);
+            Integer i = result.get(num);
+            result.put(num, i + 1);
         }
 
         return result;
