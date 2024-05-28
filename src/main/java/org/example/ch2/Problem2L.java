@@ -6,6 +6,7 @@ import java.util.*;
 
 public class Problem2L {
 
+
     public static void main(String[] args) throws IOException{
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,7 +14,13 @@ public class Problem2L {
 
         int n = Integer.parseInt(br.readLine().trim());
 
-        Team[] teams = {new Team(), new Team()};
+        int ascore = 0;
+        int bscore = 0;
+        int prev = 0;
+
+        int asum = 0;
+        int bsum = 0;
+
 
 
         for(int i = 0; i < n; i++){
@@ -21,27 +28,33 @@ public class Problem2L {
             int team = Integer.parseInt(st.nextToken());
             int time = convertTimeInt(st.nextToken());
 
-            teams[team-1].addScore(time);
+            if(ascore > bscore){
+               asum += (time - prev);
+            }
+            else if(ascore < bscore){
+                bsum += (time - prev);
+            }
+
+            if(team == 1){
+                ascore++;
+            }
+            else{
+                bscore++;
+            }
+
+            prev = time;
         }
 
-        teams[0].endGame();
-        teams[1].endGame();
-
-        int team1ScoreWinSec = 0; //team1이 이긴 초
-        int team2ScoreWinSec = 0; // team2가 이긴 초
-
-        for(int i = 0; i < 48 * 60; i++){
-            if(teams[0].scoreMap[i] > teams[1].scoreMap[i]){
-                team1ScoreWinSec++;
-            }
-            else if(teams[0].scoreMap[i] < teams[1].scoreMap[i]){
-                team2ScoreWinSec++;
-            }
+        if(ascore > bscore){
+            asum += (48*60 - prev);
+        }
+        else if(ascore < bscore){
+            bsum += (48*60 - prev);
         }
 
-        bw.write(convertTimeStr(team1ScoreWinSec));
+        bw.write(convertTimeStr(asum));
         bw.newLine();
-        bw.write(convertTimeStr(team2ScoreWinSec));
+        bw.write(convertTimeStr(bsum));
         bw.newLine();
 
 
@@ -52,25 +65,7 @@ public class Problem2L {
 
     }
 
-    static class Team{
 
-        private int[] scoreMap = new int[48 * 60];
-
-        public void addScore(int time){
-            scoreMap[time] = 1;
-        }
-
-        public void endGame(){
-            int tmp = 0;
-            for(int i = 0; i < 48 * 60; i++){
-                if(scoreMap[i] == 1){
-                    tmp++;
-                }
-                scoreMap[i] = tmp;
-            }
-        }
-
-    }
 
 
     static int convertTimeInt(String time){
