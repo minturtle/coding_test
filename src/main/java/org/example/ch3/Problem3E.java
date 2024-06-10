@@ -5,18 +5,22 @@ import java.util.*;
 
 public class Problem3E {
 
-    static List<Integer[]> routes = new ArrayList<>(6);
+    static int[][] routes = new int[][]{
+            {9, 3, 1},
+            {9, 1, 3},
+            {3, 9 ,1},
+            {3, 1, 9},
+            {1, 3, 9},
+            {1, 9, 3}
+    };
     static int n;
     static int[] scvs;
-
-    static int min = Integer.MAX_VALUE;
-
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         n = Integer.parseInt(br.readLine());
-        scvs = new int[n];
+        scvs = new int[3];
 
         StringTokenizer st = new StringTokenizer(br.readLine());
 
@@ -24,74 +28,60 @@ public class Problem3E {
             scvs[i] = Integer.parseInt(st.nextToken());
         }
 
-        createRoutes();
 
-        simulate(0);
+        int min = simulate();
 
         System.out.println(min);
 
     }
 
 
-    static void createRoutes(){
-        Integer[] route = new Integer[n];
+
+    static int simulate(){
+        int[][][] visited = new int[scvs[0] + 1][scvs[1] + 1][scvs[2] + 1];
+        Queue<int[]> queue = new LinkedList<>();
+
+        queue.add(scvs);
+
+        while(!queue.isEmpty()){
+            int[] current = queue.poll();
+
+            for(int[] route : routes){
+                int[] attackedScvs = attack(current, route);
+
+                if(visited[attackedScvs[0]][attackedScvs[1]][attackedScvs[2]] != 0){
+                    continue;
+                }
+
+                if(isAllDead(attackedScvs)){
+                    return visited[current[0]][current[1]][current[2]] + 1;
+                }
+
+                visited[attackedScvs[0]][attackedScvs[1]][attackedScvs[2]] =
+                        visited[current[0]][current[1]][current[2]] + 1;
+                queue.add(attackedScvs);
+            }
+
+        }
+
+        return -1;
+
+    }
+
+    static int[] attack(int[] scvRemains, int[] route){
+        int[] result = scvRemains.clone();
+
         for(int i = 0; i < n; i++){
-            route[i]= i;
+            result[i] = Math.max(0, result[i]-route[i]);
         }
 
-        permutation(0, route);
-    }
-
-    static void permutation(int depth, Integer[] route){
-        if(depth >= n){
-            routes.add(route.clone());
-            return;
-        }
-
-        for(int i = depth; i < n; i++){
-            swap(route, i, depth);
-            permutation(depth+1, route);
-            swap(route, i, depth);
-        }
-
-
+        return result;
     }
 
 
-    static void simulate(int cnt){
-        if(cnt >= min){
-            return;
-        }
-        if(isAllDead()){
-            min = cnt;
-            return;
-        }
-
-        for(Integer[] route : routes){
-            attack(route);
-            simulate(cnt+1);
-            back(route);
-        }
-
-    }
-
-    static void attack(Integer[] route){
-        int[] damages = {9, 3, 1};
-        for(int i = 0; i < n; i++){
-            scvs[route[i]] -= damages[i];
-        }
-    }
-
-    static void back(Integer[] route){
-        int[] damages = {9, 3, 1};
-        for(int i = 0; i < n; i++){
-            scvs[route[i]] += damages[i];
-        }
-    }
-
-    static boolean isAllDead(){
+    static boolean isAllDead(int[] scvRemains){
         for(int i = 0; i <n; i++){
-            if(scvs[i] > 0){
+            if(scvRemains[i] > 0){
                 return false;
             }
         }
@@ -99,10 +89,6 @@ public class Problem3E {
         return true;
     }
 
-    static void swap(Integer[] li, int i1, int i2){
-        int temp = li[i1];
-        li[i1] = li[i2];
-        li[i2] = temp;
-    }
+
 
 }
