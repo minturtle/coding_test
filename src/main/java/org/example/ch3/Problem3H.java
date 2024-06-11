@@ -9,8 +9,10 @@ public class Problem3H {
     static int n;
     static int k;
 
-    static int minWeight;
-    static int[] fastestRoute;
+    static int[] visited = new int[200004];
+    static int[] prev = new int[200004];
+
+
 
     public static void main(String[] args) throws IOException{
 
@@ -31,46 +33,46 @@ public class Problem3H {
             }
 
             execute();
-            bw.write(Integer.toString(minWeight));
 
+            Stack<Integer> stack = createStack();
+
+            bw.write(Integer.toString(visited[k] - 1));
             bw.newLine();
-            for(int r : fastestRoute){
-                bw.write(Integer.toString(r));
+
+            while(!stack.isEmpty()){
+                bw.write(Integer.toString(stack.pop()));
                 bw.write(' ');
             }
-
             bw.flush();
         }
     }
 
     static void execute(){
-        boolean[] visited = new boolean[100001];
-        Queue<int[]> queue = new LinkedList<>();
 
-        visited[n] = true;
-        queue.add(new int[]{n});
+
+        Queue<Integer> queue = new LinkedList<>();
+
+        visited[n] = 1;
+        queue.add(n);
 
         while(!queue.isEmpty()){
-            int[] route = queue.poll();
+            int pos = queue.poll();
 
-            int lastPos = route[route.length - 1];
-            if(lastPos == k){
-                minWeight = route.length - 1;
-                fastestRoute = route;
+            if(pos == k){
                 return;
             }
 
-            for(int nPos : new int[]{lastPos -1, lastPos + 1, lastPos * 2}){
-                if(nPos < 0 || nPos > 100000){
+            for(int nPos : new int[]{pos-1, pos+1, pos*2}){
+                if(nPos < 0 || nPos >= visited.length){
                     continue;
                 }
-                if(visited[nPos]){
+                if(visited[nPos] != 0){
                     continue;
                 }
 
-                visited[nPos] = true;
-                queue.add(createNewRoute(route, nPos));
-
+                visited[nPos] = visited[pos] + 1;
+                prev[nPos] = pos;
+                queue.add(nPos);
             }
 
 
@@ -78,14 +80,18 @@ public class Problem3H {
 
     }
 
+    static Stack<Integer> createStack(){
+        int cursor = k;
+        Stack<Integer> stack = new Stack<>();
 
-    static int[] createNewRoute(int[] route, int val){
-        int[] result = new int[route.length + 1];
-        for(int i = 0; i < route.length; i++){
-            result[i] = route[i];
+        while(cursor != n){
+            stack.push(cursor);
+            cursor = prev[cursor];
         }
 
-        result[route.length] = val;
-        return result;
+        stack.push(n);
+        return stack;
     }
+
+
 }
