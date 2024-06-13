@@ -57,15 +57,51 @@ public class Problem3J {
     static int execute(){
         int cnt = 0;
 
+        boolean [][] visited = new boolean[h][w];
+
+        Queue<Integer> queue = new LinkedList<>();
+
+        queue.add(JUNAN_POS[1] * w + JUNAN_POS[0]);
+        visited[JUNAN_POS[1]][JUNAN_POS[0]] = true;
+
+
         while(true){
-            boolean found = bfs();
+            Queue<Integer> tmpQueue = new LinkedList<>();
             cnt++;
-            if(!found){
-                continue;
+
+            while(!queue.isEmpty()){
+                int pos = queue.poll();
+                int x = pos % w;
+                int y = pos / w;
+
+
+                if(x == DEST_POS[0] && y == DEST_POS[1]){
+                    return cnt;
+                }
+                if(map[y][x] == FRIEND){
+                    map[y][x] = SPACE;
+                    tmpQueue.add(y * w + x);
+                    continue;
+                }
+                for(int i = 0; i < 4; i++){
+                    int nx = x + dx[i];
+                    int ny = y + dy[i];
+
+                    if(nx < 0 || nx >= w || ny < 0 || ny >= h || visited[ny][nx]){
+                        continue;
+                    }
+
+                    visited[ny][nx] = true;
+                    queue.add(ny * w + nx);
+
+                }
+
             }
-            return cnt;
+            queue = tmpQueue;
         }
+
     }
+
 
 
     static int getMapNum(char c) {
@@ -80,42 +116,4 @@ public class Problem3J {
     }
 
 
-    static boolean bfs(){
-        boolean [][] visited = new boolean[h][w];
-
-        Queue<Integer> queue = new LinkedList<>();
-
-        queue.add(JUNAN_POS[1] * w + JUNAN_POS[0]);
-        visited[JUNAN_POS[1]][JUNAN_POS[0]] = true;
-
-        while(!queue.isEmpty()){
-            int pos = queue.poll();
-            int x = pos % w;
-            int y = pos / w;
-
-
-            if(x == DEST_POS[0] && y == DEST_POS[1]){
-                return true;
-            }
-            if(map[y][x] == FRIEND){
-                map[y][x] = SPACE;
-                continue;
-            }
-            for(int i = 0; i < 4; i++){
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-
-                if(nx < 0 || nx >= w || ny < 0 || ny >= h || visited[ny][nx]){
-                    continue;
-                }
-
-                visited[ny][nx] = true;
-                queue.add(ny * w + nx);
-
-            }
-
-        }
-
-        return false;
-    }
 }
