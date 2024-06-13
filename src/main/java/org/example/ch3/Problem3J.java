@@ -83,31 +83,34 @@ public class Problem3J {
     static boolean bfs(){
         boolean [][] visited = new boolean[h][w];
 
-        Queue<int[]> queue = new LinkedList<>();
+        Queue<Integer> queue = new LinkedList<>();
 
-        queue.add(JUNAN_POS);
+        queue.add(JUNAN_POS[1] * w + JUNAN_POS[0]);
         visited[JUNAN_POS[1]][JUNAN_POS[0]] = true;
 
         while(!queue.isEmpty()){
-            int[] pos = queue.poll();
+            int pos = queue.poll();
+            int x = pos % w;
+            int y = pos / w;
 
-            if(pos[0] == DEST_POS[0] && pos[1] == DEST_POS[1]){
+
+            if(x == DEST_POS[0] && y == DEST_POS[1]){
                 return true;
             }
-            if(map[pos[1]][pos[0]] == FRIEND){
-                map[pos[1]][pos[0]] = SPACE;
+            if(map[y][x] == FRIEND){
+                map[y][x] = SPACE;
                 continue;
             }
             for(int i = 0; i < 4; i++){
-                int nx = pos[0] + dx[i];
-                int ny = pos[1] + dy[i];
+                int nx = x + dx[i];
+                int ny = y + dy[i];
 
                 if(nx < 0 || nx >= w || ny < 0 || ny >= h || visited[ny][nx]){
                     continue;
                 }
 
                 visited[ny][nx] = true;
-                queue.add(new int[]{nx, ny});
+                queue.add(ny * w + nx);
 
             }
 
