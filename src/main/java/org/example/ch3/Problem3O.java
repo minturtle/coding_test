@@ -7,6 +7,8 @@ public class Problem3O {
 
     static int n, m, h;
 
+    static int answer = 4;
+
     static boolean map[][];
 
     public static void main(String[] args)throws IOException{
@@ -32,54 +34,38 @@ public class Problem3O {
             }
 
 
-            System.out.println(execute());
+            execute(0, 0, 0);
+            System.out.println(answer == 4 ? -1 : answer);
         }
     }
 
-    static int execute(){
+    static void execute(int startX, int startY, int cnt){
+        if(cnt > 3 || answer <= cnt){
+            return;
+        }
 
-        for(int i = 0; i < 4; i++){
-            if(!combination(i,0, 0)){
-                continue;
+        if(simulate()){
+            answer = cnt;
+        }
+
+        for(int y = startY; y < h; y++){
+            for(int x = (y == startY? startX : 0); x < n-1; x++){
+                if(map[y][x]){
+                    continue;
+                }
+
+                map[y][x] = true;
+                execute(x + 2, y, cnt + 1);
+                map[y][x] = false;
             }
-
-            return i;
         }
-
-        return -1;
-    }
-
-    // cnt개의 좌표를 뽑은 후, 시물레이션을 통해 모든 세로줄 i가 i번으로 가는지 확인
-    static boolean combination(int c, int cnt, int start){
-        if(c == cnt){
-            return simulate();
-        }
-
-        for(int i = start; i < (n-1) * h; i++){
-            int x = i % (n-1);
-            int y = i / (n-1);
-            if(map[y][x]){
-                continue;
-            }
-
-            map[y][x] = true;
-            if(combination(c, cnt + 1, i+1)){
-                return true;
-            };
-            map[y][x] = false;
-            if(combination(c, cnt, i+1)){
-                return true;
-            };
-        }
-
-        return false;
     }
 
 
 
-    // 사다리 타기를 해서 모든 i번째 세로줄이 i로 가면 true
+    // 사다리 타기를 해서 모든 i번째 세로줄이 i로 가면 true( 0 <= i < n)
     static boolean simulate(){
-        for(int i = 0; i < n-1; i++){
+        for(int i = 0; i < n; i++){
             int flag = i;
 
             for(int j = 0; j < h; j++){

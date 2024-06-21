@@ -6,7 +6,10 @@ import java.io.*;
 public class Problem3N {
 
     static int k;
-    static int[] input;
+    static char[] input;
+
+    static List<Character>[] levelNodes;
+
 
     public static void main(String[] args) throws IOException{
         try(
@@ -15,39 +18,29 @@ public class Problem3N {
         ){
             k = Integer.parseInt(br.readLine());
 
-            input = new int[(int)Math.pow(2, k) - 1];
+            input = new char[(int)Math.pow(2, k) - 1];
 
             StringTokenizer st = new StringTokenizer(br.readLine());
 
             for(int i = 0; i < input.length; i++){
-                input[i] = Integer.parseInt(st.nextToken());
+                input[i] = st.nextToken().charAt(0);
             }
 
-            Node root = execute(0, input.length - 1);
+            levelNodes = new List[k];
 
-            Queue<Node> queue = new LinkedList<>();
-            int pt = 0;
-            int tmp = 0;
-            queue.add(root);
-
-            while(!queue.isEmpty()){
-                Node node = queue.poll();
-                bw.write(Integer.toString(node.value));
-                bw.write(' ');
-                if(++pt == (int)Math.pow(2, tmp)){
-                    bw.newLine();
-                    tmp++;
-                    pt = 0;
-                }
-
-                if(node.left != null){
-                    queue.add(node.left);
-                }
-                if(node.right != null){
-                    queue.add(node.right);
-                }
+            for(int i = 0; i < k; i++){
+                levelNodes[i] = new LinkedList<>();
             }
 
+            execute(0, input.length - 1, 0);
+
+            for(int i = 0; i < k; i++){
+                for(char c : levelNodes[i]){
+                    bw.write(c);
+                    bw.write(' ');
+                }
+                bw.newLine();
+            }
 
 
             bw.flush();
@@ -55,35 +48,18 @@ public class Problem3N {
     }
 
 
-    static Node execute(int start, int end){
+    static void execute(int start, int end, int depth){
         if(start > end){
-            return null;
+            return;
         }
 
         int mid = (start + end) / 2;
+        levelNodes[depth].add(input[mid]);
 
-
-        return new Node(
-                input[mid],
-                execute(start, mid - 1),
-                execute(mid + 1, end)
-        );
+        execute(start, mid - 1, depth+1);
+        execute(mid + 1, end, depth+1);
     }
 
 
 
-
-    static class Node{
-        public int value;
-
-        public Node left;
-        public Node right;
-
-
-        public Node(int value, Node left, Node right) {
-            this.value = value;
-            this.left = left;
-            this.right = right;
-        }
-    }
 }
