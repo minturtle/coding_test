@@ -29,14 +29,16 @@ public class Problem3P {
                 }
             }
 
-            execute(1, 1, 0);
+            execute(1, 1, 0, 0);
             System.out.println(minPrice);
         }
     }
 
-    static void execute(int startX, int startY, int cnt){
+    static void execute(int startX, int startY, int cnt, int price){
+        if(price >= minPrice){
+            return;
+        }
         if(cnt == 3){
-            int price = calculatePrice();
             minPrice = Math.min(minPrice, price);
             return;
         }
@@ -51,7 +53,7 @@ public class Problem3P {
                 }
 
                 bloomOrClose(x, y, true);
-                execute(x + 2, y, cnt + 1);
+                execute(x + 2, y, cnt + 1, price + calculatePrice(x, y));
                 bloomOrClose(x, y, false);
 
             }
@@ -86,18 +88,17 @@ public class Problem3P {
             visited[ny][nx] = bloom;
         }
     }
-    static int calculatePrice(){
-        int price = 0;
+    static int calculatePrice(int x, int y){
+        int result = 0;
+        result += priceMap[y][x];
 
-        for(int y = 0; y < n; y++){
-            for(int x= 0; x < n; x++){
-                if(!visited[y][x]){
-                    continue;
-                }
-                price += priceMap[y][x];
-            }
+        for(int i = 0; i < 4; i++){
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            result += priceMap[ny][nx];
         }
 
-        return price;
+        return result;
     }
 }
