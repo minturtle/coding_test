@@ -22,7 +22,6 @@ public class Problem4A {
     static int min  = Integer.MAX_VALUE;
     static String result;
 
-    static boolean[] visited;
 
     public static void main(String[] args) throws IOException{
         try(
@@ -30,7 +29,6 @@ public class Problem4A {
         ){
             n = Integer.parseInt(br.readLine());
             map = new int[n][5];
-            visited = new boolean[n];
 
 
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -47,54 +45,47 @@ public class Problem4A {
                 }
             }
 
-            execute(0);
+            execute();
 
 
             if(min == Integer.MAX_VALUE){
                 System.out.println(-1);
                 return;
             }
+
             System.out.println(min);
             System.out.println(result);
         }
     }
 
 
-    static void execute(int i){
-        if(i == n){
-            int price = calculatePrice();
-            if(!isOk() || (min < price)) {
-                return;
+    static void execute(){
+        for(int visited = 0; visited < (1 << n); visited++){
+            if(!isOk(visited)){
+                continue;
             }
-            if(min == price){
-                String tmp = createResult();
-                result = result.compareTo(tmp) > 0 ? tmp : result;
-                return;
+            int price = calculatePrice(visited);
+            if(price > min){
+                continue;
             }
+            if(price == min){
+                String str = createResultString(visited);
+                result = result.compareTo(str) > 0 ? str : result;
+                continue;
 
-
+            }
             min = price;
-            result = createResult();
-            return;
+            result = createResultString(visited);
         }
-
-
-        for(int x = 0; x < 2; x++){
-            visited[i] = x == 0;
-            execute(i + 1);
-        }
-
-
     }
 
-    static boolean isOk(){
-        int protein = 0;
-        int fat = 0;
-        int carbs = 0;
-        int vitamin = 0;
+    static boolean isOk(int visited){
+        int protein = 0, fat = 0, carbs = 0, vitamin = 0;
 
         for(int i = 0; i < n; i++){
-            if(!visited[i]){
+            int isVisit = visited & (1 << i);
+
+            if(isVisit == 0){
                 continue;
             }
 
@@ -102,6 +93,7 @@ public class Problem4A {
             fat += map[i][FAT_IDX];
             carbs += map[i][CARBS_IDX];
             vitamin += map[i][VITAMIN_IDX];
+
         }
 
         return protein >= leastConditions[PROTEIN_IDX] &&
@@ -110,31 +102,29 @@ public class Problem4A {
                 vitamin >= leastConditions[VITAMIN_IDX];
     }
 
-
-    static int calculatePrice(){
+    static int calculatePrice(int visited){
         int price = 0;
-
-        for(int i = 0; i < n; i++) {
-            if (!visited[i]) {
+        for(int i = 0; i < n; i++){
+            int isVisit = visited & (1 << i);
+            if(isVisit == 0){
                 continue;
             }
-            price += map[i][PRICE_IDX];
+            price+= map[i][PRICE_IDX];
         }
         return price;
     }
 
-    static String createResult(){
+    static String createResultString(int visited){
         StringJoiner sj = new StringJoiner(" ");
 
-        for(int i = 0; i < n; i++) {
-            if (!visited[i]) {
+        for(int i = 0; i < n; i++){
+            int isVisit = (visited & (1 << i));
+            if(isVisit == 0){
                 continue;
             }
             sj.add(Integer.toString(i + 1));
         }
+
         return sj.toString();
     }
-
-
-
 }
