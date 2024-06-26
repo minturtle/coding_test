@@ -61,9 +61,7 @@ public class Problem4B {
 
     static void reverse(int[] map, int idx, boolean isRow){
         if(isRow){
-            for(int i = 0; i < n; i++){
-                map[idx] ^= (1 << i);
-            }
+            map[idx] = ~map[idx];
             return;
         }
         for(int i = 0; i < n; i++){
