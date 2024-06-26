@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.*;
 
 
-public class Practice4E {
+public class Problem4E {
 
     static int n;
     static int l;
