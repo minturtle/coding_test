@@ -4,13 +4,9 @@ import java.io.*;
 import java.util.*;
 
 public class Problem4F {
-
-
-
-
     static int n, k;
 
-    static Set<Character>[] words;
+    static int[] words;
 
     static int charSelected = (1 << ('a' - 'a')) | (1 << ('n'- 'a')) | (1 << ('t' - 'a')) | (1 <<  ('i' - 'a')) | (1 << ('c' - 'a'));
 
@@ -26,16 +22,13 @@ public class Problem4F {
                 System.out.println(0);
                 return;
             }
-            words = new Set[n];
+            words = new int[n];
 
             for (int i = 0; i < n; i++) {
                 String s = br.readLine().trim();
                 s = s.substring(4, s.length() - 4);
-                words[i] = new HashSet<>();
 
-                for(int j = 0; j < s.length(); j++){
-                    words[i].add(s.charAt(j));
-                }
+                words[i] = createWordBit(s);
             }
 
             System.out.println(execute(5, 1));
@@ -45,10 +38,7 @@ public class Problem4F {
 
     static int execute(int depth, int startIdx){
         if(depth == k){
-            Set<Character> selectedCharSet = getSelectedCharSet();
-
-            return getReadableWordCount(selectedCharSet);
-
+            return getReadableWordCount();
         }
 
         int max = Integer.MIN_VALUE;
@@ -76,28 +66,28 @@ public class Problem4F {
         return (bits & ~(1 << idx));
     }
 
-    static Set<Character> getSelectedCharSet(){
-        Set<Character> result = new HashSet<>();
 
-        for(int i = 0; i < 26; i++){
-            if(!getBit(charSelected, i)){
-                continue;
+
+    static int getReadableWordCount(){
+        int result = 0;
+        for(int i = 0; i < n; i++){
+            int tmp = charSelected & words[i];
+
+            if(tmp == words[i]){
+                result++;
             }
-            result.add((char)('a' + i));
         }
+
         return result;
     }
 
 
-    static int getReadableWordCount(Set<Character> selectedCharSet){
+    static int createWordBit(String word){
         int result = 0;
-        for(int i = 0; i < n; i++){
-            if(!selectedCharSet.containsAll(words[i])){
-                continue;
-            }
-            result++;
-        }
 
+        for(int i = 0; i < word.length(); i++){
+            result |= (1 << (word.charAt(i) - 'a'));
+        }
         return result;
     }
 }
