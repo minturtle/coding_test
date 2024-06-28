@@ -11,13 +11,16 @@ public class Problem4H {
 
     static int[][] map;
 
-    static int result1;
+    static int[][] visited;
+    static int cnt;
     static int result2 = Integer.MIN_VALUE;
 
     static int result3 = Integer.MIN_VALUE;
 
-    static int[] dx = new int[]{-1, 0, 1, 0}; //서 북 동 남 순
+    static int[] dx = new int[]{-1, 0, 1, 0}; //서 북 동 남
     static int[] dy = new int[]{0, -1, 0 , 1};
+
+    static Map<Integer, Integer> roomSizeMap = new HashMap<>();
 
 
     public static void main(String[] args) throws IOException{
@@ -30,6 +33,8 @@ public class Problem4H {
             h = Integer.parseInt(st.nextToken());
 
             map = new int[h][w];
+            visited = new int[h][w];
+
 
             for(int y = 0; y < h; y++){
                 st = new StringTokenizer(br.readLine().trim());
@@ -41,7 +46,7 @@ public class Problem4H {
 
             getResult1And2();
             getResult3();
-            bw.write(Integer.toString(result1));
+            bw.write(Integer.toString(cnt));
             bw.newLine();
 
             bw.write(Integer.toString(result2));
@@ -57,52 +62,40 @@ public class Problem4H {
 
 
     static void getResult1And2(){
-        SimulateResult result = simulate();
-
-        result1 = result.cnt;
-        result2 = result.maxRoomSize;
+        for(int y = 0; y < h; y++){
+            for(int x = 0; x < w; x++){
+                if(visited[y][x] != 0){
+                    continue;
+                }
+                cnt++;
+                int dfsResult = dfs(x, y);
+                roomSizeMap.put(cnt, dfsResult);
+                result2= Math.max(dfsResult, result2);
+            }
+        }
     }
 
 
     static void getResult3(){
-        for(int y = 0; y < h; y++){
-            for(int x = 0; x < w; x++) {
-                for(int i = 0; i < 4; i++){
-                    if(!isWall(map[y][x], i)){
-                        continue;
-                    }
-                    executeWall(x, y, i,false);
-                    result3 = Math.max(simulate().maxRoomSize, result3);
-                    executeWall(x, y, i, true);
+        for(int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                if(x + 1 < w && visited[y][x] != visited[y][x + 1]){
+                    int result = addRoomIfAvailable(x, y, x + 1, y, 2);
+
+                    result3 = Math.max(result, result3);
+                }
+                if(y + 1 < h && visited[y][x] != visited[y + 1][x]){
+                    int result = addRoomIfAvailable(x, y, x, y+1, 3);
+                    result3 = Math.max(result, result3);
                 }
             }
         }
-
-    }
-
-    static SimulateResult simulate(){
-        SimulateResult result = new SimulateResult();
-
-        boolean[][] visited = initVisited();
-        for(int y = 0; y < h; y++){
-            for(int x = 0; x < w; x++){
-                if(visited[y][x]){
-                    continue;
-                }
-                result.cnt++;
-                result.maxRoomSize = Math.max(dfs(x, y, visited), result.maxRoomSize);
-            }
-        }
-        return result;
     }
 
 
-    private static boolean[][] initVisited(){
-        return new boolean[h][w];
-    }
 
-    private static int dfs(int x, int y, boolean[][] visited){
-        visited[y][x] = true;
+    private static int dfs(int x, int y){
+        visited[y][x] = cnt;
         int size = 1;
 
         for(int i = 0; i < 4; i++){
@@ -112,11 +105,11 @@ public class Problem4H {
             if(isWall(map[y][x], i)){
                 continue;
             }
-            if(nx < 0 || nx >= w || ny < 0 || ny >= h || visited[ny][nx]){
+            if(nx < 0 || nx >= w || ny < 0 || ny >= h || visited[ny][nx] != 0){
                 continue;
             }
 
-            size += dfs(nx, ny, visited);
+            size += dfs(nx, ny);
         }
 
         return size;
@@ -127,19 +120,16 @@ public class Problem4H {
         return (value & ( 1 << direction)) != 0;
     }
 
-    private static void executeWall(int x, int y, int idx, boolean isCreate){
-        if(isCreate){
-            map[y][x] |= (1 << idx);
-            return;
+
+    private static int addRoomIfAvailable(int x1, int y1, int x2, int y2, int direction){
+        if(!isWall(map[y1][x1], direction)){
+            return -1;
         }
-        map[y][x] &= ~(1 << idx);
+
+        int roomIdx1 = visited[y1][x1];
+        int roomIdx2 = visited[y2][x2];
+
+        return roomSizeMap.get(roomIdx1) + roomSizeMap.get(roomIdx2);
     }
 
-    static class SimulateResult{
-        public int cnt = 0;
-        public int maxRoomSize = 0;
-
-
-
-    }
 }
