@@ -14,50 +14,30 @@ class Problem14729 {
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))
         ) {
             int n = Integer.parseInt(br.readLine());
-            double[] last7Scores = new double[7];
+            int[] coutingArr = new int[100001];
 
-            for(int i = 0; i < 7; i++){
-                last7Scores[i] = Double.MAX_VALUE;
-            }
 
             for(int i = 0; i < n; i++){
                 double score = Double.parseDouble(br.readLine());
 
-                int idx = getIdx(score, last7Scores);
-                if(idx >= 7){
+                coutingArr[(int)(score * 1000)]++;
+            }
+
+            int cnt = 0;
+            int pt = 0;
+            while(cnt < 7){
+                if(coutingArr[pt] == 0){
+                    pt++;
                     continue;
                 }
-                moveRight(idx, last7Scores);
-                last7Scores[idx] = score;
 
-            }
-
-
-
-            for(double score : last7Scores){
-                bw.write(String.format("%.3f\n", score));
+                for(int i = 0; i < coutingArr[pt] && cnt < 7; i++, cnt++){
+                    bw.write(String.format("%.3f\n", (double)pt / (double)1000));
+                }
+                pt++;
             }
             bw.flush();
-
-
         }
-    }
-
-    private static void moveRight(int idx, double[] last7Scores) {
-        for(int i = 5; i >= idx; i--){
-            last7Scores[i + 1] = last7Scores[i];
-        }
-    }
-
-    private static int getIdx(double score, double[] last7Scores) {
-        int j;
-        for(j = 0; j < 7; j++){
-            if(score > last7Scores[j]){
-                continue;
-            }
-            break;
-        }
-        return j;
     }
 
 }
