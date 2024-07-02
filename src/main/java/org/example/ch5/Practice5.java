@@ -6,6 +6,62 @@ import java.util.*;
 public class Practice5 {
 }
 
+class Problem14729 {
+
+    public static void main(String[] args) throws IOException {
+        try (
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))
+        ) {
+            int n = Integer.parseInt(br.readLine());
+            double[] last7Scores = new double[7];
+
+            for(int i = 0; i < 7; i++){
+                last7Scores[i] = Double.MAX_VALUE;
+            }
+
+            for(int i = 0; i < n; i++){
+                double score = Double.parseDouble(br.readLine());
+
+                int idx = getIdx(score, last7Scores);
+                if(idx >= 7){
+                    continue;
+                }
+                moveRight(idx, last7Scores);
+                last7Scores[idx] = score;
+
+            }
+
+
+
+            for(double score : last7Scores){
+                bw.write(String.format("%.3f\n", score));
+            }
+            bw.flush();
+
+
+        }
+    }
+
+    private static void moveRight(int idx, double[] last7Scores) {
+        for(int i = 5; i >= idx; i--){
+            last7Scores[i + 1] = last7Scores[i];
+        }
+    }
+
+    private static int getIdx(double score, double[] last7Scores) {
+        int j;
+        for(j = 0; j < 7; j++){
+            if(score > last7Scores[j]){
+                continue;
+            }
+            break;
+        }
+        return j;
+    }
+
+}
+
 
 class Problem1202 {
 
