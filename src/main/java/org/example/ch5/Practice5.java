@@ -7,6 +7,85 @@ public class Practice5 {
 }
 
 
+class Problem1202 {
+
+    public static void main(String[] args) throws IOException {
+        try (
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))
+        ) {
+
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int k = Integer.parseInt(st.nextToken());
+
+            Jewel[] jewels = new Jewel[n];
+            int[] bagSizes = new int[k];
+
+
+            for(int i = 0; i < n; i++){
+                st = new StringTokenizer(br.readLine());
+                jewels[i] = new Jewel(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+            }
+            for(int i = 0; i < k; i++) {
+                bagSizes[i] = Integer.parseInt(br.readLine());
+            }
+
+
+            bw.write(Long.toString(execute(jewels, bagSizes)));
+            bw.flush();
+        }
+    }
+
+    static long execute(Jewel[] jewels, int[] bagSizes){
+        long result = 0;
+
+        Arrays.sort(jewels, (j1, j2)->{
+            if(j1.weight == j2.weight){
+                return  j2.price - j1.price;
+            }
+            return j1.weight - j2.weight;
+        });
+
+        Arrays.sort(bagSizes);
+        PriorityQueue<Jewel> pq = new PriorityQueue<>((j1, j2)->{
+            return j2.price - j1.price;
+        });
+
+
+
+        for (int i = 0, j = 0; i < bagSizes.length; i++) {
+            while(j < jewels.length && jewels[j].weight <= bagSizes[i]){
+                pq.add(jewels[j]);
+                j++;
+            }
+
+            if(!pq.isEmpty()){
+                Jewel jewel = pq.poll();
+                result += jewel.price;
+            }
+
+        }
+
+        return result;
+    }
+
+    static class Jewel{
+        public int price;
+        public int weight;
+
+        Jewel(int weight, int price){
+            this.weight = weight;
+            this.price = price;
+        }
+
+
+    }
+
+
+}
+
+
 
 class Problem1931{
 
@@ -67,4 +146,8 @@ class Problem1931{
             this.end = end;
         }
     }
+
+
+
+
 }
