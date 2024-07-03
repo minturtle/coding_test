@@ -26,58 +26,45 @@ public class Problem5B {
 
 
     static Optional<String> execute(String str, String boomStr){
-        Deque<Character> deque = new LinkedList<>();
-        char boomLastChar = boomStr.charAt(boomStr.length() - 1);
+        char[] cArr = new char[str.length() + 1];
+        int pt = 1;
+        char lastBoomChar = boomStr.charAt(boomStr.length() - 1);
 
+        loop1 : for(int i = 0; i < str.length(); i++){
+            cArr[pt] = str.charAt(i);
 
-        for(int i = 0; i < str.length(); i++){
-            char c = str.charAt(i);
-            deque.addLast(c);
-
-            if(c == boomLastChar){
-                removeBoomStrIfExists(deque, boomStr);
+            if(cArr[pt] != lastBoomChar || pt < boomStr.length()){
+                pt++;
+                continue;
             }
+
+            for(int j = 0; j < boomStr.length() ;j++){
+                int cArrIdx = pt - boomStr.length() + j + 1;
+                if(boomStr.charAt(j) != cArr[cArrIdx]){
+                    pt++;
+                    continue loop1;
+                }
+            }
+            pt -= boomStr.length();
+            pt++;
 
         }
 
-        if(deque.isEmpty()){
+        if(pt <= 1){
             return Optional.empty();
         }
 
+
         StringBuilder sb = new StringBuilder();
 
-        int resultSize = deque.size();
-        for(int i = 0; i < resultSize; i++){
-            sb.append(deque.removeFirst());
+        for(int i = 1; i < pt; i++){
+            sb.append(cArr[i]);
         }
 
         return Optional.of(sb.toString());
     }
 
-    static void removeBoomStrIfExists(Deque<Character> stack, String boomStr){
-        if(stack.size() < boomStr.length()){
-            return;
-        }
-
-        Stack<Character> tmp = new Stack<>();
-
-        for(int i = boomStr.length() - 1; i >= 0; i--){
-            char c = boomStr.charAt(i);
-            char c1 = stack.removeLast();
-
-            tmp.push(c1);
-
-            // boomStr이 아니면 원복
-            if(c != c1){
-                while(!tmp.isEmpty()){
-                    stack.addLast(tmp.pop());
-                }
-                return;
-            }
-        }
 
 
-
-    }
 
 }
