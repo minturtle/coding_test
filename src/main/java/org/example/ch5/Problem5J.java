@@ -7,6 +7,8 @@ import java.util.*;
 public class Problem5J {
 
 
+    static Queue<Integer>[] productIdxArr;
+
 
 
     public static void main(String[] args) throws IOException{
@@ -20,20 +22,25 @@ public class Problem5J {
             int k = Integer.parseInt(st.nextToken());
 
             int[] input = new int[k];
-            int[] productCounts = new int[k+1];
+            productIdxArr = new Queue[k + 1];
+
+            for(int i = 0; i <= k; i++){
+                productIdxArr[i] = new LinkedList<>();
+            }
+
 
             st = new StringTokenizer(br.readLine());
             for(int i = 0; i < k; i++){
                 input[i] = Integer.parseInt(st.nextToken());
-                productCounts[input[i]]++;
+                productIdxArr[input[i]].add(i);
             }
 
-            bw.write(Integer.toString(execute(hole, input, productCounts)));
+            bw.write(Integer.toString(execute(hole, input)));
             bw.flush();
         }
     }
 
-    static int execute(int holeSize, int[] products,  int[] productRemainCounts){
+    static int execute(int holeSize, int[] products){
         int result = 0;
 
         List<Integer> hole = new LinkedList<>();
@@ -41,38 +48,42 @@ public class Problem5J {
         for(int product : products){
 
             if(hole.contains(product)){
-                productRemainCounts[product]--;
+                productIdxArr[product].poll();
                 continue;
             }
 
             if(hole.size() < holeSize){
+                productIdxArr[product].poll();
                 hole.add(product);
-                productRemainCounts[product]--;
                 continue;
             }
 
-            Integer minProduct = findMinRemainProduct(hole, productRemainCounts);
-            hole.remove(minProduct);
+            Integer removeProduct = findRemoveProduct(hole);
+            hole.remove(removeProduct);
 
             hole.add(product);
-            productRemainCounts[product]--;
+            productIdxArr[product].poll();
             result++;
         }
 
         return result;
     }
 
-    static Integer findMinRemainProduct(List<Integer> hole, int[] productRemains){
-        int min = hole.get(0);
+    static Integer findRemoveProduct(List<Integer> hole){
+        int max = hole.get(0);
 
-        for(Integer product : hole){
-            if(productRemains[product] >= productRemains[min]){
-                continue;
+        for(int product : hole){
+            if(productIdxArr[product].isEmpty()){
+                return product;
             }
-            min = product;
+
+            if(productIdxArr[product].peek() > productIdxArr[max].peek()){
+                max = product;
+            }
         }
 
-        return min;
+
+        return max;
     }
 
 }
