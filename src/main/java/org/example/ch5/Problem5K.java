@@ -60,9 +60,8 @@ public class Problem5K {
 
         for(int i = 0; i < sec; i++){
             moveDust();
-
-            air();
-
+            air(true);
+            air(false);
         }
 
     }
@@ -103,9 +102,93 @@ public class Problem5K {
 
 
 
-    // dest가 0이면 반시계 순환, 1이면 시계 순환
-    static void air(int airPos, boolean dest, int startY, int endY) {
+    static void air(boolean isUp) {
+        int startX = 0;
+        int startY;
+
+        int[] dy;
+        int[] dx;
+
+        int dustSize;
+
+        if(isUp){
+            startY = airCleanerPos[0] / w;
+
+            dy = new int[]{0, -1, 0, 1};
+            dx = new int[]{1, 0, -1, 0};
+            dustSize = w * 2 + startY * 2;
+
+        }
+        else{
+            startY = airCleanerPos[1] / w;
+            dy = new int[]{0, 1, 0, -1};
+            dx = new int[]{1, 0, -1, 0};
+            dustSize = w * 2 + (h - startY + 1) * 2;
+        }
+
+        int[] moveDusts = getMoveDusts(startY, startX, dx, dy, dustSize);
+
+        moveDust(startX, dx, startY, dy, moveDusts);
+
     }
+
+    private static int[] getMoveDusts(int startY, int startX, int[] dx, int[] dy, int resultSize) {
+        int [] tmp = new int[resultSize];
+
+
+        int x = startX + dx[0];
+        int y = startY + dy[0];
+
+        int pt = 1;
+        int directPt = 0;
+
+        while(x != startX || y != startY){
+            tmp[pt++] = map[y][x];
+
+            int nx = x + dx[directPt];
+            int ny = y + dy[directPt];
+
+            if(nx < 0 || nx >= w || ny < 0 || ny >= h){
+                directPt++;
+                nx = x + dx[directPt];
+                ny = y + dy[directPt];
+            }
+
+            x = nx;
+            y = ny;
+        }
+        return tmp;
+    }
+
+
+    private static void moveDust(int startX, int[] dx, int startY, int[] dy, int[] moveDusts) {
+        int directPt;
+        int x;
+        int y;
+        int pt;
+
+        x = startX + dx[0];
+        y = startY + dy[0];
+        pt = 0;
+        directPt = 0;
+
+        while(x != startX || y != startY){
+            map[y][x] = moveDusts[pt++];
+
+            int nx = x + dx[directPt];
+            int ny = y + dy[directPt];
+
+            if(nx < 0 || nx >= w || ny < 0 || ny >= h){
+                directPt++;
+                nx = x + dx[directPt];
+                ny = y + dy[directPt];
+            }
+
+            x = nx;
+            y = ny;
+        }
+    }
+
 
 
     static int getResult(){
