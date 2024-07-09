@@ -47,7 +47,6 @@ public class Problem5Q {
             int bridgeCnt = (int)Math.ceil((double)(water.end - lastBridgeIdx) / (double) l);
             result += bridgeCnt;
 
-
             lastBridgeIdx += bridgeCnt * l;
         }
 
