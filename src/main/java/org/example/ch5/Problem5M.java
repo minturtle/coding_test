@@ -9,11 +9,6 @@ public class Problem5M {
 
     static final int MAX_PLAY_SIZE = 5;
 
-    static final int NORTH = 0;
-    static final int SOUTH = 1;
-    static final int WEST = 2;
-    static final int EAST = 3;
-
     static int n;
 
     public static void main(String[] args) throws IOException {
@@ -31,8 +26,6 @@ public class Problem5M {
                     map[y][x] = Integer.parseInt(st.nextToken());
                 }
             }
-
-            int[][] ints = moveNorth(map);
 
             bw.write(Integer.toString(execute(map, 0)));
             bw.flush();
@@ -54,31 +47,31 @@ public class Problem5M {
 
 
         int max = Integer.MIN_VALUE;
+
+        int[][] tmp = map;
+
         for(int i = 0; i < 4; i++){
-            int[][] movedMap = move(map, i);
+            tmp = rotate(tmp);
+            int[][] movedMap = move(tmp);
+
             max = Math.max(execute(movedMap, depth + 1), max);
         }
 
         return max;
     }
 
-    static int[][] move(int[][] map, int direction){
+    static int[][] rotate(int[][] map){
+        int[][] result = new int[n][n];
 
-        switch (direction){
-            case EAST:
-                return moveEast(map);
-            case WEST:
-                return moveWest(map);
-            case NORTH:
-                return moveNorth(map);
-            case SOUTH:
-                return moveSouth(map);
+        for(int y = 0; y < n; y++){
+            for(int x = 0; x < n; x++){
+                result[y][x] = map[n - 1 - x][y];
+            }
         }
-
-        return null;
+        return result;
     }
 
-    static int[][] moveEast(int[][] map){
+    static int[][] move(int[][] map){
         Deque<Integer> deque = new LinkedList<>();
 
         int[][] result = new int[n][n];
@@ -112,106 +105,6 @@ public class Problem5M {
 
         return result;
     }
-
-
-    static int[][] moveWest(int[][] map){
-        Deque<Integer> deque = new LinkedList<>();
-        int[][] result = new int[n][n];
-
-        for(int y = 0; y < n; y++) {
-            int pt = 0;
-            for (int x = 0; x < n; x++) {
-                int val = map[y][x];
-                if(val == 0){
-                    continue;
-                }
-                if(deque.isEmpty() || deque.peekLast() != val){
-                    deque.addLast(val);
-                    continue;
-                }
-
-                deque.removeLast();
-                while(!deque.isEmpty()){
-                    result[y][pt++] = deque.removeFirst();
-                }
-                result[y][pt++] = val << 1;
-            }
-            while(!deque.isEmpty()){
-                result[y][pt++] = deque.removeFirst();
-            }
-
-        }
-
-        return result;
-    }
-
-    static int[][] moveNorth(int[][] map){
-        Deque<Integer> deque = new LinkedList<>();
-        int[][] result = new int[n][n];
-
-        for(int x = 0; x < n; x++) {
-            int pt = 0;
-            for (int y = 0; y < n; y++) {
-                int val = map[y][x];
-                if(val == 0){
-                    continue;
-                }
-                if(deque.isEmpty() || deque.peekLast() != val){
-                    deque.addLast(val);
-                    continue;
-                }
-
-
-                deque.removeLast();
-                while(!deque.isEmpty()){
-                    result[pt++][x] = deque.removeFirst();
-                }
-                result[pt++][x] = val << 1;
-            }
-
-            while(!deque.isEmpty()){
-                result[pt++][x] = deque.removeFirst();
-            }
-        }
-
-
-
-
-        return result;
-    }
-
-    static int[][] moveSouth(int[][] map){
-        Deque<Integer> deque = new LinkedList<>();
-        int[][] result = new int[n][n];
-
-        for(int x = 0; x < n; x++) {
-            int pt = n - 1;
-            for (int y = n - 1; y >= 0; y--) {
-                int val = map[y][x];
-                if(val == 0){
-                    continue;
-                }
-                if(deque.isEmpty() || deque.peekLast() != val){
-                    deque.addLast(val);
-                    continue;
-                }
-
-                deque.removeLast();
-                while(!deque.isEmpty()){
-                    result[pt--][x] = deque.removeFirst();
-                }
-                result[pt--][x] = val << 1;
-            }
-            while(!deque.isEmpty()){
-                result[pt--][x] = deque.removeFirst();
-            }
-        }
-
-        return result;
-
-    }
-
-
 
 }
 
