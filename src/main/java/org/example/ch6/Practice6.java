@@ -6,9 +6,48 @@ import java.util.*;
 public class Practice6{
 
 }
+class LIS1 {
+
+    public static void main(String[] args) throws IOException {
+        try (
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        ) {
+            int n = Integer.parseInt(br.readLine());
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int[] numbers = new int[n];
+            for (int i = 0; i < n; i++) {
+                numbers[i] = Integer.parseInt(st.nextToken());
+            }
+
+            bw.write(Integer.toString(execute(numbers)));
+        }
+    }
+
+    static int execute(int[] numbers){
+        int max = 0;
+        int[] cnt = new int[numbers.length];
 
 
+        for(int i = 0; i < numbers.length; i++){
+            int maxVal = 0;
 
+            for(int j = 0; j < i; j++){
+                if(numbers[i] <= numbers[j]){
+                    continue;
+                }
+                maxVal = Math.max(maxVal, cnt[j]);
+            }
+
+            cnt[i] = ++maxVal;
+            max = Math.max(max, maxVal);
+        }
+
+
+        return max;
+    }
+
+}
 class LIS4 {
 
     public static void main(String[] args) throws IOException{
