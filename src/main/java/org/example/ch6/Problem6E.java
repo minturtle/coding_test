@@ -12,65 +12,41 @@ public class Problem6E {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         ){
             StringTokenizer st = new StringTokenizer(br.readLine());
-            
+
             int n = Integer.parseInt(st.nextToken());
             int m = Integer.parseInt(st.nextToken());
 
-            int[] setA = new int[n];
-            int[] setB = new int[m];
+
+            Set<Integer> setA = new HashSet<>();
+            Set<Integer> setB = new HashSet<>();
 
             st = new StringTokenizer(br.readLine());
 
             for(int i = 0; i < n; i++){
-                setA[i] = Integer.parseInt(st.nextToken());
+                setA.add(Integer.parseInt(st.nextToken()));
             }
 
             st = new StringTokenizer(br.readLine());
 
             for(int i = 0; i < m; i++){
-                setB[i] = Integer.parseInt(st.nextToken());
+                setB.add(Integer.parseInt(st.nextToken()));
             }
-            
+
             bw.write(Integer.toString(execute(setA, setB)));
             bw.flush();
         }
     }
 
-    private static int execute(int[] setA, int[] setB){
-        Arrays.sort(setA);
-        Arrays.sort(setB);
-
+    private static int execute(Set<Integer> setA, Set<Integer> setB){
         return getChaCount(setA, setB) + getChaCount(setB, setA);
     }
 
-    private static int getChaCount(int[] setA, int[] setB){
-        int result = 0;
-        for(int number : setA){
-            if(!binarySearch(setB, number)){
-                result++;
-            }
-        }
+    private static int getChaCount(Set<Integer> set1, Set<Integer> set2){
+        HashSet<Integer> set1Copy = new HashSet<>(set1);
 
-        return result;
-    }
 
-    private static boolean binarySearch(int[] sortedGroup, int value){
-        int l = 0, r = sortedGroup.length;
-
-        while(l < r){
-            int mid = (l + r) / 2;
-            if(sortedGroup[mid] == value){
-                return true;
-            }
-            if(sortedGroup[mid] > value){
-                r = mid;
-                continue;
-            }
-
-            l = mid + 1;
-        }
-
-        return false;
+        set1Copy.removeAll(set2);
+        return set1Copy.size();
     }
 
 }
