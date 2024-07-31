@@ -34,7 +34,6 @@ public class Problem6I {
         long r = (int)1e9;
 
         long maxSize = Long.MIN_VALUE;
-
         while(l <= r){
             long mid = (l + r) / 2;
 
