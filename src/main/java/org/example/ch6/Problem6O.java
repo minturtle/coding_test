@@ -25,49 +25,34 @@ public class Problem6O {
 
 
     static int execute(Wire[] wires){
-        int result = 0;
-        while(true){
-            int max = getMaxCrossedWireIdx(wires);
+        Arrays.sort(wires, (w1, w2)->{
+            return w1.a - w2.a;
+        });
 
-            if(max == -1){
-                break;
-            }
-            result++;
-            wires[max] = null;
-        }
+        return wires.length - getLisSize(wires);
 
-        return result;
     }
 
-    static int getMaxCrossedWireIdx(Wire[] wires){
-        int idx = -1;
-        int maxCnt = 0;
+
+    static int getLisSize(Wire[] wires){
+        int[] cnt = new int[wires.length];
 
         for(int i = 0; i < wires.length; i++){
-            int cnt = 0;
-
-            if(wires[i] == null){
-                continue;
-            }
-
-            for(int j = 0; j < wires.length; j++){
-                if(wires[j] == null || i == j){
+            int maxVal = 0;
+            for(int j = 0; j < i; j++){
+                if(wires[i].b <= wires[j].b){
                     continue;
                 }
-                if(wires[i].isCrossed(wires[j])){
-                    cnt++;
-                }
+                maxVal = Math.max(maxVal, cnt[j]);
             }
 
-            if(maxCnt >= cnt){
-                continue;
-            }
-            idx = i;
-            maxCnt = cnt;
+            cnt[i] = maxVal + 1;
         }
 
-        return idx;
+        return Arrays.stream(cnt).max().orElse(0);
     }
+
+
 
     private static class Wire{
         final int a;
@@ -78,12 +63,5 @@ public class Problem6O {
             this.b = b;
         }
 
-        public boolean isCrossed(Wire other){
-            if(this.a > other.a){
-                return this.b < other.b;
-            }
-
-            return this.b > other.b;
-        }
     }
 }
