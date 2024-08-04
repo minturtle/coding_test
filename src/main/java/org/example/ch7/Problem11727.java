@@ -14,6 +14,7 @@ public class Problem11727 {
             if(n == 1){
                 bw.write("1");
                 bw.flush();
+                return;
             }
 
             bw.write(Integer.toString(execute(n)));
