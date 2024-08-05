@@ -30,6 +30,7 @@ public class Problem7B {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         ){
+
            n = Integer.parseInt(br.readLine());
            map = new int[n][n];
            initDp();
