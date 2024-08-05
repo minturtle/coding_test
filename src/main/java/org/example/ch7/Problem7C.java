@@ -14,7 +14,7 @@ public class Problem7C {
     private static int n;
     private static int m;
 
-    private static int[][] map;
+    private static int[][] map, dp;
     private static boolean[][] visited;
 
     public static void main(String[] args) throws IOException{
@@ -27,6 +27,7 @@ public class Problem7C {
             m = Integer.parseInt(st.nextToken());
 
             map = new int[n][m];
+            dp = new int[n][m];
             visited = new boolean[n][m];
 
             for(int i = 0; i < n; i++){
@@ -38,6 +39,7 @@ public class Problem7C {
                     }
                     map[i][j] = s.charAt(j) - '0';
                 }
+                Arrays.fill(dp[i], -1);
             }
 
             visited[0][0] = true;
@@ -47,9 +49,13 @@ public class Problem7C {
     }
 
     static int dfs(int x, int y){
+        if(dp[y][x] != -1){
+            return dp[y][x];
+        }
+
         int value = map[y][x];
 
-        int result = 0;
+        dp[y][x] = 0;
         for(int i = 0; i < 4; i++){
             int nx = x + (dx[i] * value);
             int ny = y + (dy[i] * value);
@@ -67,12 +73,12 @@ public class Problem7C {
                 return tmp;
             }
 
-            result = Math.max(tmp, result);
+            dp[y][x] = Math.max(tmp, dp[y][x]);
             visited[ny][nx] = false;
 
         }
 
-        return result + 1;
+        return ++dp[y][x];
     }
 
 }
