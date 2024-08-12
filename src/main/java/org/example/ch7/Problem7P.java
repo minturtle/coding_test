@@ -11,8 +11,7 @@ public class Problem7P {
     private static int destA;
 
     private static int destB;
-    private static int[][] dp;
-    private static boolean[][] visited;
+
 
 
     public static void main(String[] args) throws IOException {
@@ -24,61 +23,76 @@ public class Problem7P {
 
             maxA = Integer.parseInt(st.nextToken());
             maxB = Integer.parseInt(st.nextToken());
-            dp = new int[maxA + 1][maxB + 1];
-            visited = new boolean[maxA + 1][maxB + 1];
-
-            for(int a = 0; a < maxA + 1; a++){
-                Arrays.fill(dp[a], Integer.MAX_VALUE);
-            }
-
 
             destA = Integer.parseInt(st.nextToken());
             destB = Integer.parseInt(st.nextToken());
 
-            bw.write(Integer.toString(execute(0, 0)));
-
+            bw.write(Integer.toString(execute()));
+            bw.flush();
         }
 
     }
 
 
-    private static int execute(int a, int b){
-        if(destA == a && destB == b){
-            return 0;
-        }
-        if(dp[a][b] != Integer.MAX_VALUE){
-            return dp[a][b];
-        }
-        if(visited[a][b]){
-            return -1;
-        }
+    private static int execute(){
+        Queue<Node> queue = new LinkedList<>();
+        Set<Node> visited = new HashSet<>();
 
+        Node nd = new Node(0, 0, 0);
+        queue.add(nd);
+        visited.add(nd);
 
-        int moveToBAmount = Math.min((maxB - b), a);
-        int moveToAAmount = Math.min((maxA - a), b);
+        while(!queue.isEmpty()){
+            Node node = queue.poll();
 
-        int[][] args = {{maxA, b}, {a, maxB},
-                {0, b}, {a, 0},
-                {a - moveToBAmount, b + moveToBAmount}, {a + moveToAAmount, b - moveToAAmount}
-        };
-        visited[a][b] = true;
-        for(int[] arg : args){
-
-            int tmp = execute(arg[0], arg[1]);
-
-            if(tmp == -1){
-                continue;
+            if(node.a == destA && node.b == destB){
+                return node.cnt;
             }
 
-            dp[a][b] = Math.min(dp[a][b], tmp + 1);
+            int moveAAmount = Math.min(node.b, maxA - node.a);
+            int moveBAmount = Math.min(node.a, maxB - node.b);
+            int[][] argList = {
+                    {maxA, node.b}, {node.a, maxB},
+                    {node.a, 0}, {0, node.b},
+                    {node.a + moveAAmount, node.b - moveAAmount}, {node.a - moveBAmount, node.b + moveBAmount}
+            };
+
+            for(int[] args : argList){
+                Node newNode = new Node(args[0], args[1], node.cnt + 1);
+
+                if(!visited.add(newNode)){
+                    continue;
+                }
+                queue.add(newNode);
+            }
+
         }
 
-        if(dp[a][b] == Integer.MAX_VALUE){
-            dp[a][b] = -1;
+        return -1;
+    }
+
+    private static class Node{
+        public final int a;
+        public final int b;
+        public final int cnt;
+
+        public Node(int a, int b, int cnt) {
+            this.a = a;
+            this.b = b;
+            this.cnt = cnt;
         }
 
+        @Override
+        public boolean equals(Object o){
+            if(!(o instanceof Node node)){
+                return false;
+            }
+            return  node.a == this.a && node.b == this.b;
+        }
 
-        visited[a][b] = false;
-        return dp[a][b];
+        @Override
+        public int hashCode(){
+            return Objects.hash(this.a, this.b);
+        }
     }
 }
