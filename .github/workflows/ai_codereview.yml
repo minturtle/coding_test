@@ -11,11 +11,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Review This Pull Request
         run: |
-          curl -X POST "https://careersupport.serveblog.net/api/code-review" \
-          -H "Content-Type: application/json" \
-          -H "X-API-TOKEN: ${{ secrets.CAREER_SUPPORT_API_TOKEN }}" \
-          -d '{
+          curl --location 'https://careersupport.serveblog.net/api/code-review' \
+          --header 'X-API-TOKEN: ${{ secrets.CAREER_SUPPORT_API_TOKEN }}' \
+          --header 'Content-Type: application/json' \
+          --data '{
             "githubToken": "${{ secrets.GITHUB_TOKEN }}",
-            "repositoryName": "${{ github.repository }}", 
-            "prNumber": ${{ github.event.pull_request.number }}, 
+            "repositoryName": "${{ github.repository }}",
+            "prNumber": ${{ github.event.pull_request.number }}
           }'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
