@@ -5,17 +5,16 @@ on:
     branches: [master]
 
 jobs:
-  ai-code-review:
+  review:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Review This Pull Request
-        run: |
-          curl --location 'https://careersupport.serveblog.net/api/code-review' \
-          --header 'X-API-TOKEN: ${{ secrets.CAREER_SUPPORT_API_TOKEN }}' \
-          --header 'Content-Type: application/json' \
-          --data '{
-            "githubToken": "${{ secrets.PERSONAL_GITHUB_TOKEN }}",
-            "repositoryName": "${{ github.repository }}",
-            "prNumber": ${{ github.event.pull_request.number }}
-          }'
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Code Review Bot
+        uses: minturtle/careersupport-code-review-bot@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          career-support-api-token: ${{ secrets.CAREER_SUPPORT_API_TOKEN }}
+          repository-name: ${{ github.repository }}
+          pr-number: ${{ github.event.pull_request.number }}
