@@ -15,9 +15,7 @@ jobs:
           --header 'X-API-TOKEN: ${{ secrets.CAREER_SUPPORT_API_TOKEN }}' \
           --header 'Content-Type: application/json' \
           --data '{
-            "githubToken": "${{ secrets.GITHUB_TOKEN }}",
+            "githubToken": "${{ secrets.PERSONAL_GITHUB_TOKEN }}",
             "repositoryName": "${{ github.repository }}",
             "prNumber": ${{ github.event.pull_request.number }}
           }'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
